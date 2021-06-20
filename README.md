@@ -1,6 +1,6 @@
 # Drink water!
 
-Simple CLI for tracking drinking (e.g. water).
+Simple CLI to track your hydration.
 
 ## Try it
 ```
