@@ -13,6 +13,11 @@ type Drink struct {
 	When    time.Time
 }
 
+type DailyDrinks struct {
+	Drinks []Drink
+	Day    time.Time
+}
+
 const (
 	kitchen   = "03:04PM"
 	dayFormat = "02 Jan 06"
@@ -33,11 +38,11 @@ func printDrinks(indent string, w io.Writer, d []Drink) {
 	fmt.Fprintf(w, "%sSUM\t\t\t\t%d\n", indent, sum)
 }
 
-func PrintAll(d map[time.Time][]Drink) {
+func PrintAll(d []DailyDrinks) {
 	w := tabwriter.NewWriter(os.Stdout, 1, 2, 2, ' ', 0)
-	for day, drinks := range d {
-		fmt.Fprintf(w, "%s\n", day.Format(dayFormat))
-		printDrinks("\t\t", w, drinks)
+	for _, ddrinks := range d {
+		fmt.Fprintf(w, "%s\n", ddrinks.Day.Format(dayFormat))
+		printDrinks("\t\t", w, ddrinks.Drinks)
 	}
 	w.Flush()
 }

@@ -20,21 +20,27 @@ func TestPrintDrinks(t *testing.T) {
 }
 
 func TestPrintAllDrinks(t *testing.T) {
-	testDrinks := map[time.Time][]Drink{
-		time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC): {
-			{
-				HowMuch: 240,
-				When:    time.Date(2021, 1, 1, 12, 1, 1, 0, time.UTC),
-			},
-			{
-				HowMuch: 300,
-				When:    time.Date(2021, 1, 1, 1, 1, 1, 0, time.UTC),
+	testDrinks := []DailyDrinks{
+		{
+			Day: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
+			Drinks: []Drink{
+				{
+					HowMuch: 240,
+					When:    time.Date(2021, 1, 1, 12, 1, 1, 0, time.UTC),
+				},
+				{
+					HowMuch: 300,
+					When:    time.Date(2021, 1, 1, 1, 1, 1, 0, time.UTC),
+				},
 			},
 		},
-		time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC): {
-			{
-				HowMuch: 240,
-				When:    time.Date(2021, 1, 2, 12, 1, 1, 0, time.UTC),
+		{
+			Day: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
+			Drinks: []Drink{
+				{
+					HowMuch: 240,
+					When:    time.Date(2021, 1, 2, 12, 1, 1, 0, time.UTC),
+				},
 			},
 		},
 	}

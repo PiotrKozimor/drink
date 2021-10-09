@@ -64,9 +64,11 @@ func (s *Store) GetTodaysDrinks(when time.Time) ([]Drink, error) {
 	})
 }
 
-func (s *Store) GetAllDrinks() (map[time.Time][]Drink, error) {
-	drinks := make(map[time.Time][]Drink, 0)
-	return drinks, s.DB.View(func(t *bbolt.Tx) error {
+func (s *Store) GetAllDrinks() ([]DailyDrinks, error) {
+	var dailyDrinks []DailyDrinks
+	var day *time.Time
+	var dailyDrink DailyDrinks
+	return dailyDrinks, s.DB.View(func(t *bbolt.Tx) error {
 		b := getBucket(t)
 		c := b.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
@@ -74,12 +76,20 @@ func (s *Store) GetAllDrinks() (map[time.Time][]Drink, error) {
 			if err != nil {
 				return err
 			}
-			day := drink.When.Truncate(24 * time.Hour)
-			if drinks[day] == nil {
-				drinks[day] = make([]Drink, 0, 4)
+			nextDay := drink.When.Truncate(24 * time.Hour)
+			if day == nil {
+				dailyDrink.Day = nextDay
+				day = &nextDay
 			}
-			drinks[day] = append(drinks[day], *drink)
+			if nextDay != *day {
+				dailyDrinks = append(dailyDrinks, dailyDrink)
+				dailyDrink.Day = nextDay
+				dailyDrink.Drinks = nil
+				day = &nextDay
+			}
+			dailyDrink.Drinks = append(dailyDrink.Drinks, *drink)
 		}
+		dailyDrinks = append(dailyDrinks, dailyDrink)
 		return nil
 	})
 }

@@ -30,15 +30,15 @@ var (
 			When:    time.Date(2021, 1, 11, 23, 59, 59, 0, time.UTC),
 		},
 		{
-			HowMuch: 240,
+			HowMuch: 250,
 			When:    timeEarly,
 		},
 		{
-			HowMuch: 240,
+			HowMuch: 260,
 			When:    timeLate,
 		},
 		{
-			HowMuch: 240,
+			HowMuch: 270,
 			When:    time.Date(2021, 1, 13, 0, 0, 1, 0, time.UTC),
 		},
 	}
@@ -64,8 +64,10 @@ func TestDrinkItOne(t *testing.T) {
 	is.NoErr(err)
 	is.Equal(len(drinks), 1)
 	testDay := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
-	is.Equal(drinks[testDay][0].When, testDrink.When)
-	is.Equal(drinks[testDay][0].HowMuch, testDrink.HowMuch)
+	is.Equal(drinks[0].Day, testDay)
+	is.Equal(len(drinks[0].Drinks), 1)
+	is.Equal(drinks[0].Drinks[0].When, testDrink.When)
+	is.Equal(drinks[0].Drinks[0].HowMuch, testDrink.HowMuch)
 }
 
 func TestDrinkItMany(t *testing.T) {
@@ -74,11 +76,17 @@ func TestDrinkItMany(t *testing.T) {
 	mustDrinkMany(s, is)
 	drinks, err := s.GetAllDrinks()
 	is.NoErr(err)
-	is.Equal(len(drinks), len(testDrinks)-1) // we have two drinks for one day
-	is.Equal(drinks[time.Date(2021, 1, 11, 0, 0, 0, 0, time.UTC)][0], testDrinks[0])
-	is.Equal(drinks[time.Date(2021, 1, 12, 0, 0, 0, 0, time.UTC)][0], testDrinks[1])
-	is.Equal(drinks[time.Date(2021, 1, 12, 0, 0, 0, 0, time.UTC)][1], testDrinks[2])
-	is.Equal(drinks[time.Date(2021, 1, 13, 0, 0, 0, 0, time.UTC)][0], testDrinks[3])
+	is.Equal(len(drinks), len(testDrinks)-1) // we have two drinks for second day
+	is.Equal(drinks[0].Day, time.Date(2021, 1, 11, 0, 0, 0, 0, time.UTC))
+	is.Equal(len(drinks[0].Drinks), 1)
+	is.Equal(drinks[0].Drinks[0], testDrinks[0])
+	is.Equal(drinks[1].Day, time.Date(2021, 1, 12, 0, 0, 0, 0, time.UTC))
+	is.Equal(len(drinks[1].Drinks), 2)
+	is.Equal(drinks[1].Drinks[0], testDrinks[1])
+	is.Equal(drinks[1].Drinks[1], testDrinks[2])
+	is.Equal(drinks[2].Day, time.Date(2021, 1, 13, 0, 0, 0, 0, time.UTC))
+	is.Equal(len(drinks[2].Drinks), 1)
+	is.Equal(drinks[2].Drinks[0], testDrinks[3])
 }
 
 func TestGetTodaysDrinks(t *testing.T) {
