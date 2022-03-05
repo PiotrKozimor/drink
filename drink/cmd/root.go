@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -38,5 +39,9 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&dbPath, "database", "d", ".drink/drinks.db", "path to database file")
+	rootCmd.PersistentFlags().StringVarP(&dbPath, "database", "d", ".drink/drinks.db", "path to database file, overriden by DRINK_DB env variable")
+	dbPathEnv := os.Getenv("DRINK_DB")
+	if dbPathEnv != "" {
+		dbPath = dbPathEnv
+	}
 }
